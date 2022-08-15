@@ -25,27 +25,24 @@ def stock_picker(days)
   end
 
   if best_day.empty? 
-    puts "********"
+    puts "----"
     puts "Best not to trade in this period"
-    puts "********"
+    puts " "
   else 
+    puts "----"
     puts "Buy day  : #{best_day[:buy_day] + 1}"
     puts "Sell day : #{best_day[:sell_day] + 1}"
     puts "Profit   : $#{best_day[:dif]}"
+    puts " "
   end
 
 end
 
-
-puts "----"
 puts "Period 1"
 stock_picker([17,3,6,9,15,8,6,1,10])
-puts "----"
 puts "Period 2"
 stock_picker([1,2,3,4,5,6,7,8,9,10])
-puts "----"
 puts "Period 3"
 stock_picker([10,9,8,7,6,5,4,3,2,1])
-puts "----"
 puts "Period 4"
 stock_picker([1,34,2,5,65,34,3,322])
