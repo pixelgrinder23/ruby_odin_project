@@ -10,3 +10,5 @@ def cipher(string, shifter=5)
 
   shifted.join
 end
+
+puts cipher("hello", 10)
