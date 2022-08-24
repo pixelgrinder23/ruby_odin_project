@@ -526,7 +526,6 @@ p phyl.age
 
 #--------
 
-=end
 
 class Student
   attr_accessor :name
@@ -551,3 +550,10 @@ sam = Student.new("Sam", "B")
 p joe.name
 p sam.better_grade_than?(joe)
 p joe.better_grade_than?(sam)
+
+#--------
+
+=end
+
+
+obj = "I thought he said this wasn't going to be abstract..."
