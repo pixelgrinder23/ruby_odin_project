@@ -555,5 +555,176 @@ p joe.better_grade_than?(sam)
 
 =end
 
+# For creating Car objects
+# class Car
+#   attr_accessor :name, :price
 
-obj = "I thought he said this wasn't going to be abstract..."
+#   def to_s
+#     "#{@name}: #{@price}"
+#   end
+# end
+
+# c1 = Car.new
+# c2 = Car.new
+
+# c1.name = 'Porche'
+# c1.price = 23500
+
+# c2.name = 'Ford'
+# c2.price = 6900
+
+# puts "The #{c1.name} costs #{c1.price}"
+
+# puts c1
+# puts c2
+
+# Makes book objects
+# class Book
+#   attr_accessor :title, :pages
+# end
+
+# b1 = Book.new
+# b1.title = 'I like bums!'
+# b1.pages = 69
+
+# p "The book '#{b1.title}' has #{b1.pages} pages!"
+
+# Class constants
+# class MMath
+#   PI = 3.141592
+# end
+
+# puts MMath::PI
+
+# to_s replacement
+# class Being
+#   def to_s
+#     'I am Being class(y)'
+#   end
+# end
+
+# be_me = Being.new
+# puts be_me.to_s
+# puts be_me
+
+# Circle business
+# class Circle
+#   attr_accessor :radius
+
+#   def initialize r
+#     @radius = r
+#   end
+
+#   def + (other)
+#     Circle.new @radius + other.radius
+#   end
+
+#   def to_s
+#     "Circle with radius of #{radius}."
+#   end
+# end
+
+# c1 = Circle.new(5)
+# c2 = Circle.new(6)
+# c3 = c1 + c2
+# puts c3
+
+# More circles
+# class Circle
+#   def initialize x
+#     @r = x
+#   end
+
+#   def self.info
+#     'This is a Circle class'
+#   end
+
+#   def area
+#     @r * @r * 3.141592
+#   end
+# end
+
+# p Circle.info
+# c = Circle.new(30)
+# p c.area
+
+# Module mixins
+# module Mathy
+#   include Math
+
+#   puts PI
+# end
+
+# Mathy
+
+# module flexing
+# module Forest
+#   class Rock; end
+#   class Tree; end
+#   class Animal; end
+# end
+
+# module Town
+#   class Pool; end
+#   class Cinema; end
+#   class Square; end
+#   class Animal; end
+# end
+
+# p Forest::Tree.new
+# p Forest::Rock.new
+# p Town::Cinema.new
+
+# p Forest::Animal.new
+# p Town::Animal.new
+
+# Multiple inheritence
+module Device
+  def switch_on
+    puts 'on'
+  end
+
+  def switch_off
+    puts 'off'
+  end
+end
+
+# Volume
+module Volume
+  def vol_up
+    puts 'Gets louder'
+  end
+
+  def vol_down
+    puts 'Gets quieter'
+  end
+end
+
+# Charging
+module Pluggable
+  def plug_in
+    puts 'Charging!'
+  end
+
+  def plug_out
+    puts 'Unplugged'
+  end
+end
+
+# It's a phone!
+class Cellphone
+  include Device
+  include Volume
+  include Pluggable
+
+  def ringing
+    puts 'Answer me!'
+  end
+end
+
+cph = Cellphone.new
+
+cph.switch_on
+cph.vol_up
+cph.ringing
+cph.plug_in

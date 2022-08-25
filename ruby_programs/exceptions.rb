@@ -57,20 +57,18 @@
 
 # end
 
-# for i in "A".."C"
-#   retries = 2
-#   begin
-#     puts "Executing command: #{i}"
-#     raise "Exception: #{i}"   #raise creates an exception error event & names it
-#   rescue Exception=>e    #saving the Exception error code to e
-#     puts "\tCaught: #{e}" #\t is a tab
-#     if retries > 0
-#       puts "\tTrying #{retries} more times\n"   #\n untabs
-#       retries -= 1
-#       sleep 2
-#       retry   #sends the program back to begin
-#     end
-#   end
-# end
-
-hhhdhdhdhdhdhdhdhdhdhhhdhdhdhdhdhdhdhdhdhhhdhdhdhdhdhdhdhdhdhhhdhdhdhdhdhdhdhdhdss
+for i in "A".."C"
+  retries = 2
+  begin
+    puts "Executing command: #{i}"
+    raise "Exception: #{i}"   # raise creates an exception error event & names it
+  rescue Exception=>e    # saving the Exception error code to e
+    puts "\tCaught: #{e}" # \t is a tab
+    if retries > 0
+      puts "\tTrying #{retries} more times\n" # \n untabs
+      retries -= 1
+      sleep 2
+      retry   # sends the program back to begin
+    end
+  end
+end
