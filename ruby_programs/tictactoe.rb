@@ -1,10 +1,4 @@
-# Elements
-
-# Game board        - method (draws board / variable for state of each space - empty / X / O)
-# Players           - class (@name / )
-# Making a move     - class (X or O / location / @turn counter)
-# Placed moves      - instances (@location / @XorO)
-# checking for win  - method?
+# Tic Tac Toe
 
 # Making moves
 module Move
@@ -16,67 +10,79 @@ module Move
   
   def player_turn
     @whos_move == "X" ? @whos_move = "O" : @whos_move = "X"
+    puts " "
     puts "#{@whos_move}'s go"
+    puts " "
     print 'Where would you like to place your piece? : '
-    @moved = 0
-    until (1..9).include?(@moved)
-      @moved = gets.chomp.to_i
-      if (1..9).include?(@moved) == false
+    escape = 0
+    until escape == 1
+      @moved = "s" + gets.chomp.slice(0)
+      move_symbol = @moved.to_sym
+      if (1..9).include?(@moved.slice(1).to_i) == false
         print 'Enter a number from 1-9! : '
         next
+      elsif @board[move_symbol] != " "
+        puts "That space is taken!"
+        print 'Where would you like to place your piece? : '
+        next
       else
-        @move_taken = [@moved, @whos_move]
+        @board[move_symbol] = @whos_move
+        escape = 1
       end
     end
 
-    return @move_taken
+    # return @move_taken
   end
 
+end
+
+module Winnable
+
+  attr_reader :winner
+
+  @winner = " "
+  def win_state_check 
+
+    if [@board[:s1], @board[:s2], @board[:s3]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s1]; end
+    if [@board[:s4], @board[:s5], @board[:s6]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s4]; end
+    if [@board[:s7], @board[:s8], @board[:s9]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s7]; end
+    if [@board[:s1], @board[:s4], @board[:s7]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s1]; end
+    if [@board[:s2], @board[:s5], @board[:s8]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s2]; end
+    if [@board[:s3], @board[:s6], @board[:s9]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s3]; end
+    if [@board[:s1], @board[:s5], @board[:s9]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s1]; end
+    if [@board[:s7], @board[:s5], @board[:s3]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s7]; end
+    return @winner
+  end
 end
 
 # Draw board
 class Board 
   include Move
+  include Winnable
   
-  attr_accessor :a1, :b1, :c1, :a2, :b2, :c2, :a3, :b3, :c3
+  attr_accessor :board
   def setup
-    @a1 = " "
-    @b1 = " "
-    @c1 = " "
-    @a2 = " "
-    @b2 = " "
-    @c2 = " "
-    @a3 = " "
-    @b3 = " "
-    @c3 = " "
-  end
-
-  def update_board(turn)
-    location = turn[0].to_i
-    player = turn[1]
-    # puts "Update Board -  #{location} : #{player}"
-    case location
-      when 1 then @a1 = player
-      when 2 then @b1 = player
-      when 3 then @c1 = player
-      when 4 then @a2 = player
-      when 5 then @b2 = player
-      when 6 then @c2 = player
-      when 7 then @a3 = player
-      when 8 then @b3 = player
-      when 9 then @c3 = player
-    end
+    @board = {
+      s1: " ",
+      s2: " ",
+      s3: " ",
+      s4: " ",
+      s5: " ",
+      s6: " ",
+      s7: " ",
+      s8: " ",
+      s9: " ", }
   end
 
   def draw_board
-    system("clear") || system("cls") # Uncomment this line when you're done to clear the terminal each redraw!
+    system("clear") || system("cls") # clears the terminal each redraw
     p '                    '
-    p "     #{@a1} | #{@b1} | #{@c1}      "
+    p "     #{@board[:s1]} | #{@board[:s2]} | #{@board[:s3]}      "
     p "     ---------      "
-    p "     #{@a2} | #{@b2} | #{@c2}      "
+    p "     #{@board[:s4]} | #{@board[:s5]} | #{@board[:s6]}      "
     p "     ---------      "
-    p "     #{@a3} | #{@b3} | #{@c3}      "
-    p '                    '
+    p "     #{@board[:s7]} | #{@board[:s8]} | #{@board[:s9]}      "
+    p '                    '   
 
   end
 
@@ -85,22 +91,28 @@ end
 # The game loop
 class GameLoop < Board
   include Move
+  include Winnable
 
   current_game = Board.new
   x = 0
   current_game.setup
   current_game.draw_board
 
-  while x < 9 do
-    current_game.update_board(current_game.player_turn)
+  while x < 9
+    current_game.player_turn
     current_game.draw_board
+    if current_game.win_state_check == ("X" || "O")
+      puts "#{current_game.win_state_check} wins!" 
+      break
+    end
     x += 1
+  end
+
+  if current_game.win_state_check != ("X" || "O")
+    puts "It's a draw"
   end
 end
 
 GameLoop
 
-# Prevent moves in full spaces
-# Checking for a winner (either player)
 # Computer opponent
-# Replace board variables with a hash
