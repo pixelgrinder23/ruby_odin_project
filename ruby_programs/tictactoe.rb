@@ -31,34 +31,15 @@ module Move
       end
     end
 
-    # return @move_taken
   end
 
-end
-
-module Winnable
-
-  attr_reader :winner
-
-  @winner = " "
-  def win_state_check 
-
-    if [@board[:s1], @board[:s2], @board[:s3]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s1]; end
-    if [@board[:s4], @board[:s5], @board[:s6]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s4]; end
-    if [@board[:s7], @board[:s8], @board[:s9]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s7]; end
-    if [@board[:s1], @board[:s4], @board[:s7]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s1]; end
-    if [@board[:s2], @board[:s5], @board[:s8]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s2]; end
-    if [@board[:s3], @board[:s6], @board[:s9]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s3]; end
-    if [@board[:s1], @board[:s5], @board[:s9]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s1]; end
-    if [@board[:s7], @board[:s5], @board[:s3]].all? { |val| val == ("X" || "O") } == true then @winner = @board[:s7]; end
-    return @winner
-  end
 end
 
 # Draw board
 class Board 
   include Move
   include Winnable
+  include Whopper
   
   attr_accessor :board
   def setup
@@ -88,10 +69,50 @@ class Board
 
 end
 
+module Whopper
+
+  def blank_check
+    blanks = []
+
+    @board.each { |key, val| blanks << key if val == " " }
+    # p blanks
+    
+  end
+  
+
+
+end
+
+module Winnable
+
+  attr_reader :winner
+
+  @winner = " "
+
+  def win_state_check 
+
+    win_states = [
+      [@board[:s1], @board[:s2], @board[:s3]],
+      [@board[:s4], @board[:s5], @board[:s6]],
+      [@board[:s7], @board[:s8], @board[:s9]],
+      [@board[:s1], @board[:s4], @board[:s7]],
+      [@board[:s2], @board[:s5], @board[:s8]],
+      [@board[:s3], @board[:s6], @board[:s9]],
+      [@board[:s1], @board[:s5], @board[:s9]],
+      [@board[:s7], @board[:s5], @board[:s3]]
+    ]
+
+    checker = win_states.select { |arr| arr.all? { |val| val == "O" } || arr.all? { |val| val == "X" } }
+    if checker.length == 1
+      @winner = checker[0][0]
+    end
+
+    return @winner
+  end
+end
+
 # The game loop
 class GameLoop < Board
-  include Move
-  include Winnable
 
   current_game = Board.new
   x = 0
@@ -101,15 +122,19 @@ class GameLoop < Board
   while x < 9
     current_game.player_turn
     current_game.draw_board
-    if current_game.win_state_check == ("X" || "O")
-      puts "#{current_game.win_state_check} wins!" 
+    current_game.blank_check
+    win_yet = current_game.win_state_check
+    if win_yet == "X" || win_yet == "O"
+      puts "#{win_yet} wins!" 
       break
     end
     x += 1
   end
 
-  if current_game.win_state_check != ("X" || "O")
-    puts "It's a draw"
+  draw = current_game.win_state_check
+  if draw == nil
+    puts "It's a draw!"
+    puts "It would seem that the only winning move is not to play...."
   end
 end
 
