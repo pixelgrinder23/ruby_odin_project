@@ -13,17 +13,27 @@ module Move
     puts " "
     puts "#{@whos_move}'s go"
     puts " "
-    print 'Where would you like to place your piece? : '
     escape = 0
     until escape == 1
-      @moved = "s" + gets.chomp.slice(0)
+      if @player == @whos_move
+        print 'Where would you like to place your piece? : '
+        @moved = "s" + gets.chomp.slice(0)
+      else
+        print "Thinking"
+        i = 0
+        while i < rand(1..4) do
+           sleep 1
+           print "."
+           i += 1
+        end
+        @moved = comp_turn
+      end
       move_symbol = @moved.to_sym
       if (1..9).include?(@moved.slice(1).to_i) == false
-        print 'Enter a number from 1-9! : '
+        puts 'Enter a number from 1-9! '
         next
       elsif @board[move_symbol] != " "
         puts "That space is taken!"
-        print 'Where would you like to place your piece? : '
         next
       else
         @board[move_symbol] = @whos_move
@@ -32,54 +42,6 @@ module Move
     end
 
   end
-
-end
-
-# Draw board
-class Board 
-  include Move
-  include Winnable
-  include Whopper
-  
-  attr_accessor :board
-  def setup
-    @board = {
-      s1: " ",
-      s2: " ",
-      s3: " ",
-      s4: " ",
-      s5: " ",
-      s6: " ",
-      s7: " ",
-      s8: " ",
-      s9: " ", }
-  end
-
-  def draw_board
-    system("clear") || system("cls") # clears the terminal each redraw
-    p '                    '
-    p "     #{@board[:s1]} | #{@board[:s2]} | #{@board[:s3]}      "
-    p "     ---------      "
-    p "     #{@board[:s4]} | #{@board[:s5]} | #{@board[:s6]}      "
-    p "     ---------      "
-    p "     #{@board[:s7]} | #{@board[:s8]} | #{@board[:s9]}      "
-    p '                    '   
-
-  end
-
-end
-
-module Whopper
-
-  def blank_check
-    blanks = []
-
-    @board.each { |key, val| blanks << key if val == " " }
-    # p blanks
-    
-  end
-  
-
 
 end
 
@@ -110,6 +72,66 @@ module Winnable
     return @winner
   end
 end
+module Whopper
+
+  def comp_turn
+    blanks = []
+
+    @board.each { |key, val| blanks << key.to_s if val == " " }
+    return blanks[rand(blanks.length)]
+
+
+  end
+  
+end
+
+# Draw board
+class Board 
+  include Move
+  include Winnable
+  include Whopper
+  
+  attr_accessor :board
+  attr_accessor :player
+
+  def setup
+    @board = {
+      s1: " ",
+      s2: " ",
+      s3: " ",
+      s4: " ",
+      s5: " ",
+      s6: " ",
+      s7: " ",
+      s8: " ",
+      s9: " ", }
+
+      system("clear") || system("cls") # clears the terminal
+      escape = 0
+      until escape == 1 do
+        print "Would you like to be X or O? "
+        @player = gets.chomp.upcase
+        if @player == "X" || @player == "O"
+          escape = 1
+        else
+          next
+        end
+      end
+  end
+
+  def draw_board
+    system("clear") || system("cls") # clears the terminal each redraw
+    puts '                    '
+    puts "     #{@board[:s1]} | #{@board[:s2]} | #{@board[:s3]}      "
+    puts "     ---------      "
+    puts "     #{@board[:s4]} | #{@board[:s5]} | #{@board[:s6]}      "
+    puts "     ---------      "
+    puts "     #{@board[:s7]} | #{@board[:s8]} | #{@board[:s9]}      "
+    puts '                    '   
+
+  end
+
+end
 
 # The game loop
 class GameLoop < Board
@@ -122,10 +144,15 @@ class GameLoop < Board
   while x < 9
     current_game.player_turn
     current_game.draw_board
-    current_game.blank_check
+    current_game.comp_turn
     win_yet = current_game.win_state_check
     if win_yet == "X" || win_yet == "O"
-      puts "#{win_yet} wins!" 
+      system("clear") || system("cls") # clears the terminal
+      puts '*****************'
+      puts '**             **'
+      puts "**   #{win_yet} wins!   **" 
+      puts '**             **'
+      puts '*****************'
       break
     end
     x += 1
@@ -133,11 +160,11 @@ class GameLoop < Board
 
   draw = current_game.win_state_check
   if draw == nil
-    puts "It's a draw!"
-    puts "It would seem that the only winning move is not to play...."
+    puts "**     It's a draw!     **"
+    puts "    It would seem that" 
+    puts "   the only winning move"
+    puts "    is not to play...."
   end
 end
 
 GameLoop
-
-# Computer opponent
