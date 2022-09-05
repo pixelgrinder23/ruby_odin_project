@@ -164,6 +164,7 @@ class GameLoop < Board
     puts "    It would seem that" 
     puts "   the only winning move"
     puts "    is not to play...."
+    puts "**                      **
   end
 end
 
