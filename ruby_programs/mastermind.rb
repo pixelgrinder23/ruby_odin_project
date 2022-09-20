@@ -59,8 +59,9 @@ end
 class Game < Board
 
   current_game = Board.new
-  @the_code = Array.new(4) { rand(1..6) }
+  the_code = Array.new(4) { rand(1..6) }
   
+
   escape = 0
   rounds = 1
 
@@ -71,21 +72,30 @@ class Game < Board
     print 'Please enter a 4 peg code (1-6) :'
     guess = gets.chomp.split("").map! { |val| val.to_i }.first(4)
     
-    # puts "Guess = #{guess}"
-    puts "The code = #{@the_code}"
+    puts "The code = #{the_code}"
 
-    guess.each_with_index do |val, ind| 
-
-      if @the_code[ind] == val
+    guess.each_with_index do |val, ind|
+      if the_code[ind] == val
         feedback << "Y"
-      elsif @the_code.include?(val)
-        feedback << "O"
       else
-        feedback << "-"
+        feedback << val
       end
     end
 
-    # p feedback
+    the_code.each_with_index do |val, ind|
+      if feedback[ind] != "Y" && feedback.include?(val)
+        feedback[feedback.find_index(val)] = "O"
+      end
+    end
+
+    feedback.map! do |val| 
+      if val == "O" || val == "Y"
+        val = val
+      else 
+        val = "-"
+      end
+    end
+
     current_game.update_board(rounds, guess, feedback)
     current_game.draw_board(rounds)
     if feedback == ["Y","Y","Y","Y"] 
@@ -99,3 +109,9 @@ class Game < Board
 end
 
 Game
+
+# create computer player to guess the code
+# add ability to choose whether player is code maker or breaker
+# build my own approach for computer guessing
+# research & implement several strategies for solving & pick one at random each go, including my version
+# https://puzzling.stackexchange.com/questions/546/clever-ways-to-solve-mastermind
