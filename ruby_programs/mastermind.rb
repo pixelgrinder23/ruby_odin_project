@@ -1,24 +1,3 @@
-
-# module Drawing
-
-#   def draw_board(rounds)
-
-#     i = 0
-#     puts " ___ ___ ___ ___"
-#     while i < rounds do
-
-#       x = "r#{i + 1}".to_sym
-#       y = "fb#{i + 1}".to_sym
-#       puts "|   |   |   |   |"
-#       puts "| #{@board[x][0]} | #{@board[x][1]} | #{@board[x][2]} | #{@board[x][3]} | #{@feedback[y].join}"
-#       puts "|___|___|___|___|"
-#       i += 1
-#     end
-#     puts " "
-#   end
-
-# end
-
 class Board
 
   include Drawing
