@@ -1,7 +1,5 @@
 class Board
 
-  include Drawing
-
   attr_accessor :board, :feedback
 
   def initialize
@@ -25,16 +23,16 @@ class Board
     }
   end
 
-  def update_board(round, guess, feedback)
+  def update_board(round, guess, feedback, maker, the_code)
     r = "r#{round}".to_sym
     fb = "fb#{round}".to_sym
     guess.each_with_index { |val, ind| @board[r][ind] = val }
     feedback.each_with_index { |val, ind| @feedback[fb][ind] = val }
 
+    system("clear") || system("cls") # clears the terminal
     i = 0
     puts " ___ ___ ___ ___"
     while i < round do
-
       x = "r#{i + 1}".to_sym
       y = "fb#{i + 1}".to_sym
       puts "|   |   |   |   |"
@@ -43,26 +41,38 @@ class Board
       i += 1
     end
     puts " "
+    if maker == "H"
+      puts " ___ ___ ___ ___"
+      puts " "
+      puts "| #{the_code[0]} | #{the_code[1]} | #{the_code[2]} | #{the_code[3]} |"
+      puts " ___ ___ ___ ___"
+      puts " "
+    end
+
   end
   
 end
 
 class Game < Board
 
-  print "(C)omputer or (Human) code maker? "
+  attr_accessor :the_code, :maker
+
+  print "(C)omputer or (Human) codemaker? "
   maker = gets.chomp.upcase
 
   current_game = Board.new
 
   if maker == "H" 
     print "Enter a 4 digit code (1-6) : "
-    the_code = gets.chomp.slice(0,4)
+    the_code = gets.chomp.split("").map! { |val| val.to_i }.first(4)
   else
     the_code = Array.new(4) { rand(1..6) }
   end
 
   escape = 0
   rounds = 1
+  holding = [9,9,9,9]
+  retry_nums = []
 
   until escape == 1 || rounds == 7 do
 
@@ -96,20 +106,37 @@ class Game < Board
         end
       end
       
-      current_game.update_board(rounds, guess, feedback)
+      current_game.update_board(rounds, guess, feedback, maker, the_code)
     else
-      guess = Array.new(4) { rand(1..6) }
+      guess = [] 
       
-      current_game.update_board(rounds, guess, feedback)
-      puts "The guess = #{guess}"
+      4.times do |num|
+        if holding[num] != 9
+          guess[num] = holding[num]
+        elsif retry_nums.length > 0
+          guess[num] = retry_nums.pop
+        else 
+          guess[num] = rand(1..6)
+        end
+      end
+      current_game.update_board(rounds, guess, feedback, maker, the_code)
+      puts "Your code = #{the_code}"
       print "Please give feedback using Y (correct), O (matching number), or - (incorrect) : "
       feedback = gets.chomp.upcase.split("")
       
-      current_game.update_board(rounds, guess, feedback)
+      4.times do |num|
+        if feedback[num] == "Y"
+          holding[num] = guess[num]
+        elsif feedback[num] == "O"
+          retry_nums.push(guess[num])
+        end
+      end
+
+      current_game.update_board(rounds, guess, feedback, maker, the_code)
     end
 
     if feedback == ["Y","Y","Y","Y"] 
-      puts "WINNER"
+      puts "CODE BROKEN!"
       escape = 1
     end
     rounds += 1
@@ -120,6 +147,5 @@ end
 
 Game 
 
-# build my own approach for computer guessing
 # research & implement several strategies for solving & pick one at random each go, including my version
 # https://puzzling.stackexchange.com/questions/546/clever-ways-to-solve-mastermind
