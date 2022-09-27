@@ -55,9 +55,9 @@ end
 
 class Game < Board
 
-  attr_accessor :the_code, :maker
+  # attr_accessor :the_code, :maker
 
-  print "(C)omputer or (Human) codemaker? "
+  print "(C)omputer or (H)uman codemaker? "
   maker = gets.chomp.upcase
 
   current_game = Board.new
@@ -83,7 +83,6 @@ class Game < Board
       guess = gets.chomp.split("").map! { |val| val.to_i }.first(4)
       
       puts "The code = #{the_code}"
-
       guess.each_with_index do |val, ind|
         if the_code[ind] == val
           feedback << "Y"
@@ -129,6 +128,7 @@ class Game < Board
           holding[num] = guess[num]
         elsif feedback[num] == "O"
           retry_nums.push(guess[num])
+          retry_nums.shuffle
         end
       end
 
@@ -142,10 +142,12 @@ class Game < Board
     rounds += 1
 
   end
+  
+  if rounds == 7 
+    puts "CODE REMAINS A MYSTERY"
+  end
 
 end
 
 Game 
 
-# research & implement several strategies for solving & pick one at random each go, including my version
-# https://puzzling.stackexchange.com/questions/546/clever-ways-to-solve-mastermind
